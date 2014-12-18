@@ -13,6 +13,8 @@ gulp.src('./css/**/*').pipe(kssStyleguide(/*options*/));
 
 To generate a styleguide, use the `sectionBuildCallback` option. 
 `sectionBuildCallback` will be called for each root section with the appropriate context. `allSectionsBuiltCallback` is called once and is good for moving over assets(styleguide styles, javascript, etc) or making an overview page.
+
+You can return a stream or an array of streams in each callback. We use these to determine when the gulp task is finished.
 ```
 gulp.src('./css/**/*').pipe(kssStyleguide({
 	sectionBuildCallback: function(context) {
@@ -37,7 +39,7 @@ gulp.src('./css/**/*').pipe(kssStyleguide({
  	 - Parameters: `context` (*note: does not include `currentRootReference` because it doesn't apply here*)
  	 - You can return a stream or array of streams
 
-Also supports all of the [built-in node KSS options](https://github.com/kss-node/kss-node/wiki/Module-API#options).
+Also passes along all of the [built-in node KSS options](https://github.com/kss-node/kss-node/wiki/Module-API#options).
 
 ### Context
 

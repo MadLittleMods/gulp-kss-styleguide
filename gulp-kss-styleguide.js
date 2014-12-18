@@ -19,7 +19,7 @@ const PLUGIN_NAME = 'gulp-kss-styleguide';
 // 
 // To generate a styleguide, use the `sectionBuildCallback` option. 
 // `sectionBuildCallback` will be called for each root section with the appropriate context
-// gulp.src('./scss/**/*').pipe(kssStyleguide({
+// gulp.src('./css/**/*').pipe(kssStyleguide({
 //	sectionBuildCallback: function(context) {
 //		return gulp.src('./template/path')
 //			.pipe(renderTemplate(context));
