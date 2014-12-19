@@ -2,9 +2,10 @@ var through = require('through2'); // https://www.npmjs.org/package/through2
 var es = require('event-stream');
 var extend = require('extend'); // https://www.npmjs.org/package/extend
 var gutil = require('gulp-util'); // https://www.npmjs.org/package/gulp-util
+var kss = require('kss');
+
 var PluginError = gutil.PluginError;
 
-var kss = require('kss');
 
 var generateSectionMap = require('./lib/generate-section-map');
 
