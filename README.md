@@ -60,7 +60,8 @@ sectionMap = {
 			description, // More details explaining the section
 			isDeprecated, // boolean
 			isExperimental, // boolean
-			markup, // Generic markup with the ${modifiers}, NOT filled in
+			markupCode, // Generic markup with the ${modifiers}, NOT filled in
+			markup, // Markup with the {$modifiers} removed for a base example
 			modifiers: [
 				{
 					name, // Name of the modifier (`:hover`, `.disabled`, `-hanging`)
