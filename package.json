@@ -1,13 +1,25 @@
 {
   "name": "gulp-kss-styleguide",
-  "version": "1.0.0",
-  "description": "",
-  "main": "gulp-kss-styleguide.js",
+  "version": "0.2.0",
+  "description": "Generate a Styleguide from KSS comments.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MadLittleMods/gulp-kss-styleguide"
+  },
+  "keywords": [
+    "kss",
+    "styleguide",
+    "gulp",
+    "gulpplugin",
+    "gulpfriendly"
+  ],
+  "author": "Eric Eastwood <contact@ericeastwood.com> (http://ericeastwood.com/)",
+  "license": "MIT",
+  "bugs": "https://github.com/MadLittleMods/gulp-kss-styleguide/issues",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "event-stream": "^3.1.7",
     "extend": "^2.0.0",

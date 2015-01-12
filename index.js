@@ -1,11 +1,9 @@
+var Promise = require('promise');
 var through = require('through2'); // https://www.npmjs.org/package/through2
 var es = require('event-stream');
 var extend = require('extend'); // https://www.npmjs.org/package/extend
 var gutil = require('gulp-util'); // https://www.npmjs.org/package/gulp-util
 var kss = require('kss');
-
-var PluginError = gutil.PluginError;
-
 
 var generateSectionMap = require('./lib/generate-section-map');
 
@@ -15,7 +13,7 @@ const PLUGIN_NAME = 'gulp-kss-styleguide';
 
 
 // Usage:
-// Pass in all of your styles (CSS, SASS, LESS)
+// Pass in all of your styles (CSS, Sass, Less)
 //	gulp.src('./css/**/*').pipe(kssStyleguide());
 // 
 // To generate a styleguide, use the `sectionBuildCallback` option. 
@@ -96,7 +94,7 @@ var kss_styleguide = function(options) {
 		//console.log('transform');
 
 		if (chunk.isStream()) {
-			throw new PluginError(PLUGIN_NAME, 'Cannot work on stream');
+			self.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Cannot operate on stream'));
 		}
 
 		if (chunk.isBuffer()) {
@@ -118,45 +116,53 @@ var kss_styleguide = function(options) {
 				kssMap: sectionMap
 			};
 
-			var sectionBuildCallback = settings.sectionBuildCallback;
-			if(sectionBuildCallback) {
-				var sectionBuildsStream = null;
-				Object.keys(sectionMap).forEach(function(reference) {
-					var sectionContext = extend({}, context, {
-						currentRootReference: reference
+			var whenBuildDealtWithPromise = new Promise(function(resolve, reject) {
+				var sectionBuildCallback = settings.sectionBuildCallback;
+				if(sectionBuildCallback) {
+					var sectionBuildsStream = null;
+					Object.keys(sectionMap).forEach(function(reference) {
+						var sectionContext = extend({}, context, {
+							currentRootReference: reference
+						});
+
+						var returnedStreams = settings.sectionBuildCallback(sectionContext);
+						sectionBuildsStream = mergeStreamsInto(sectionBuildsStream, returnedStreams);
 					});
 
-					var returnedStreams = settings.sectionBuildCallback(sectionContext);
-					sectionBuildsStream = mergeStreamsInto(sectionBuildsStream, returnedStreams);
-				});
+					if(sectionBuildsStream != null) {
+						// Once all of the streams from building the sections have finished,
+						sectionBuildsStream.on('end', function() {
+							// Make one last callback so that they can move assets, etc
+							var returnedStreams = settings.allSectionsBuiltCallback(context);
+							if(returnedStreams != null) {
+								var mergedStream = mergeStreamsInto(null, returnedStreams);
 
-				if(sectionBuildsStream != null) {
-					// Once all of the streams from building the sections have finished,
-					sectionBuildsStream.on('end', function() {
-						// Make one last callback so that they can move assets, etc
-						var returnedStreams = settings.allSectionsBuiltCallback(context);
-						if(returnedStreams != null) {
-							var mergedStream = mergeStreamsInto(null, returnedStreams);
+								// We can consider the plugin, as a whole, to be completed
+								mergedStream.on('end', function() {
+									resolve();
+								});
+							}
+							else {
+								resolve();
+							}
+							
+						});
+					}
+					else {
+						resolve();
+					}
 
-							// We can consider the plugin, as a whole, to be completed
-							mergedStream.on('end', function() {
-								// "call callback when the flush operation is complete."
-								cb();
-							});
-						}
-						else {
-							// "call callback when the flush operation is complete."
-							cb();
-						}
-						
-					});
 				}
 				else {
-					// "call callback when the flush operation is complete."
-					cb();
+					resolve();
 				}
+			});
 
-			}
+			whenBuildDealtWithPromise.done(function() {
+				// "call callback when the flush operation is complete."
+				cb();
+			});
+
 
 			/* * /
 			sections.forEach(function(section) {

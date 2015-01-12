@@ -4,9 +4,19 @@ Generate styleguides from [KSS syntax](https://github.com/kneath/kss) comments.
 
 This plugin does not lock you down to a certain templating system etc. Just use the callbacks and context to render/generate your own templates ([Handlebars](http://handlebarsjs.com/), [Nunjucks](https://mozilla.github.io/nunjucks/), etc).
 
+# Install
+
+## Latest Version: 0.2.0
+
+Currently on GitHub.
+```
+npm install MadLittleMods/gulp-kss-styleguide
+
+
 
 ## Usage:
-Pass in all of your styles (CSS, SASS, LESS). Yes, every file, not just the base file with the imports because we don't resolve them.
+
+Pass in all of your styles (CSS, Sass, Less). Yes, every file, not just the base file with the imports because we don't resolve them.
 ```
 gulp.src('./css/**/*').pipe(kssStyleguide(/*options*/));
 ```
@@ -30,7 +40,7 @@ gulp.src('./css/**/*').pipe(kssStyleguide({
 ```
 
 
-## Options
+# Options
 
  - **`sectionBuildCallback`**: Callback used to build/compile each section. *(called multiple times for each section)*
  	 - Parameters: `context`
@@ -41,7 +51,9 @@ gulp.src('./css/**/*').pipe(kssStyleguide({
 
 Also passes along all of the [built-in node KSS options](https://github.com/kss-node/kss-node/wiki/Module-API#options).
 
-### Context
+# Context
+
+This is the object structure passed into both callbacks `sectionBuildCallback` and `allSectionsBuiltCallback`.
 
 ```
 var context = {
