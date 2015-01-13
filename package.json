@@ -24,7 +24,7 @@
     "event-stream": "^3.1.7",
     "extend": "^2.0.0",
     "gulp-util": "^3.0.1",
-    "kss": "git://github.com/kss-node/kss-node#master",
+    "kss": "git://github.com/kss-node/kss-node#3ee1d2484baaa847fd349a254356c0cf373c29d5",
     "promise": "^6.0.1",
     "through2": "^0.6.3"
   }
