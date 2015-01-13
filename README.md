@@ -6,7 +6,7 @@ This plugin does not lock you down to a certain templating system etc. Just use 
 
 # Install
 
-## Latest Version: 0.2.0
+## Latest Version: 0.2.1
 
 Currently on GitHub.
 ```
@@ -70,6 +70,12 @@ sectionMap = {
 			reference, // The number representing the section (1.1, 2.5, etc)
 			header, // The name of the section
 			description, // More details explaining the section
+			parameters: [
+				{
+					name, // Name of the parameter
+					description, // More details explaining the parameter
+				}
+			]
 			isDeprecated, // boolean
 			isExperimental, // boolean
 			markupCode, // Generic markup with the ${modifiers}, NOT filled in
@@ -77,7 +83,7 @@ sectionMap = {
 			modifiers: [
 				{
 					name, // Name of the modifier (`:hover`, `.disabled`, `-hanging`)
-					description, // More details explaining the section
+					description, // More details explaining the modifier
 					markup // Markup with the modifier in place
 				}
 			]
