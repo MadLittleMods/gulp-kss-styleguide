@@ -11,7 +11,7 @@ This plugin does not lock you down to a certain templating system etc. Just use 
 Currently on GitHub.
 ```
 npm install MadLittleMods/gulp-kss-styleguide
-
+```
 
 
 ## Usage:
