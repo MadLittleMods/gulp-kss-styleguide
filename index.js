@@ -116,10 +116,10 @@ var kss_styleguide = function(options) {
 				kssMap: sectionMap
 			};
 
-			var whenBuildDealtWithPromise = new Promise(function(resolve, reject) {
-				var sectionBuildCallback = settings.sectionBuildCallback;
-				if(sectionBuildCallback) {
-					var sectionBuildsStream = null;
+			var whenBuildDealtWithPromise = new Promise(function(buildResolve) {
+
+				var sectionBuildsStream = null;
+				if(settings.sectionBuildCallback) {
 					Object.keys(sectionMap).forEach(function(reference) {
 						var sectionContext = extend({}, context, {
 							currentRootReference: reference
@@ -128,35 +128,55 @@ var kss_styleguide = function(options) {
 						var returnedStreams = settings.sectionBuildCallback(sectionContext);
 						sectionBuildsStream = mergeStreamsInto(sectionBuildsStream, returnedStreams);
 					});
+				}
 
-					if(sectionBuildsStream != null) {
+
+				var whenSectionBuildsDealtWithPromise = new Promise(function(sectionBuildsResolve) {
+					if(sectionBuildsStream) {
 						// Once all of the streams from building the sections have finished,
 						sectionBuildsStream.on('end', function() {
+							sectionBuildsResolve();
+						});
+					}
+					else {
+						sectionBuildsResolve();
+					}
+				});
+
+
+				var whenFinalBuildDealtWithPromise = new Promise(function(finalBuildsResolve) {
+					// All of the sections are built(dealt with), so we now we do the final `settings.allSectionsBuiltCallback` callback
+					whenSectionBuildsDealtWithPromise.done(function() {
+						if(settings.allSectionsBuiltCallback) {
 							// Make one last callback so that they can move assets, etc
 							var returnedStreams = settings.allSectionsBuiltCallback(context);
-							if(returnedStreams != null) {
+							if(returnedStreams) {
 								var mergedStream = mergeStreamsInto(null, returnedStreams);
 
 								// We can consider the plugin, as a whole, to be completed
 								mergedStream.on('end', function() {
-									resolve();
+									finalBuildsResolve();
 								});
 							}
 							else {
-								resolve();
+								finalBuildsResolve();
 							}
-							
-						});
-					}
-					else {
-						resolve();
-					}
+						}
+						else {
+							finalBuildsResolve();
+						}
+					});
+				});
 
-				}
-				else {
-					resolve();
-				}
+
+
+				// We dealt with all of the callbacks now
+				whenFinalBuildDealtWithPromise.done(function() {
+					buildResolve();
+				});
+
 			});
+
 
 			whenBuildDealtWithPromise.done(function() {
 				// "call callback when the flush operation is complete."
@@ -181,14 +201,6 @@ var kss_styleguide = function(options) {
 	
 
 	});
-	/* * /
-	.on('data', function(data) {
-		//console.log('---------------------');
-		//console.log(String(data.contents));
-	}).on('end', function() {
-		
-	});
-	/* */
 
 	// returning the file stream
 	return stream;

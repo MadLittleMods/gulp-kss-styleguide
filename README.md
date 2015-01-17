@@ -6,7 +6,7 @@ This plugin does not lock you down to a certain templating system etc. Just use 
 
 # Install
 
-## Latest Version: 0.2.1
+## Latest Version: 0.2.2
 
 Currently on GitHub.
 ```
